@@ -275,6 +275,9 @@ body {
   box-shadow: -2px 0 10px rgba(0, 0, 0, 0.3);
   transition: right 0.3s ease;
   z-index: 1001;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 
@@ -343,6 +346,10 @@ body {
 .bag-options {
   padding: 20px;
   font-size: 22px;
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 
@@ -394,6 +401,7 @@ body {
   border: none;
   transform: scale(0.98);
   transition: transform 0.5s ease-in-out;
+  margin-top: auto;
 }
 
 
@@ -413,8 +421,6 @@ body {
 
 .bag-itens {
   display: flex;
-  align-items: center;
-  flex-direction: row;
   background-color: #1a1325;
   border: 1px solid #7c3aed;
   border-radius: 12px;
@@ -423,6 +429,7 @@ body {
   color: #fff;
   transform: scale(1.0);
   transition: transform 0.4s ease, box-shadow 0.2s ease;
+  align-items: center;
 }
 
 .bag-itens:hover {
@@ -434,8 +441,8 @@ body {
 #info-prod{
   padding-bottom: 0.9rem;
   width: 200px;
+  padding-bottom: 0px;
 }
-
 
 #lata-bg {
   width: 80px;
@@ -506,8 +513,41 @@ body {
   justify-content: center;
 }
 
+
 .bag-itens {
   gap: 10px;
+}
+
+
+.bag-total {
+  font-size: 1.5rem;
+  color: #fff;
+  margin: 15px 0;
+  text-align: center;
+}
+
+#bag-total-price {
+  color: #a855f7;
+  font-weight: 600;
+}
+
+
+.bag-options::-webkit-scrollbar {
+  width: 6px;
+}
+
+.bag-options::-webkit-scrollbar-track {
+  background: #2d2d2d;
+  border-radius: 10px;
+}
+
+.bag-options::-webkit-scrollbar-thumb {
+  background: #7c3aed;
+  border-radius: 10px;
+}
+
+.bag-options::-webkit-scrollbar-thumb:hover {
+  background: #6d28d9;
 }
 
 

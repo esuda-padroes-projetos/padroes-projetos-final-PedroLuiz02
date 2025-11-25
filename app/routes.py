@@ -8,6 +8,49 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import re
 
 
+regex_nome = r"^[A-Za-zÀ-ÖØ-öø-ÿ]+(?: [A-Za-zÀ-ÖØ-öø-ÿ]+)+$"
+regex_senha = r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&._-])[A-Za-z\d@$!%*?&._-]{6,}$"
+regex_email = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+
+
+# STRATEGY 
+class EstrategiaValidacao:
+    def validar(self, valor): 
+        pass
+    
+    def mensagem_erro(self):
+        return "Valor inválido"
+
+class ValidadorNome(EstrategiaValidacao):
+    def validar(self, nome):
+        regex_nome = r"^[A-Za-zÀ-ÖØ-öø-ÿ]+(?: [A-Za-zÀ-ÖØ-öø-ÿ]+)+$"
+        return bool(re.match(regex_nome, nome))
+    
+    def mensagem_erro(self):
+        return "nome_invalido"
+
+class ValidadorEmail(EstrategiaValidacao):
+    def validar(self, email):
+        regex_email = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        return bool(re.match(regex_email, email))
+    
+    def mensagem_erro(self):
+        return "email_invalido"
+
+class ValidadorSenha(EstrategiaValidacao):
+    def validar(self, senha):
+        regex_senha = r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&._-])[A-Za-z\d@$!%*?&._-]{6,}$"
+        return bool(re.match(regex_senha, senha))
+    
+    def mensagem_erro(self):
+        return "senha_invalida"
+
+validadores = {
+    'nome': ValidadorNome(),
+    'email': ValidadorEmail(), 
+    'senha': ValidadorSenha()
+}
+
 @login_manager.user_loader
 def user_loader(user_id):
     return db.session.get(Usuario, int(user_id))
@@ -63,27 +106,31 @@ def criar_pedido():
 
     pedido = Pedido.query.filter_by(id_usuario=usuario.id_usuario, status="Em andamento").first()
 
-    if not pedido:
-        pedido = Pedido(id_usuario=usuario.id_usuario, status="Em andamento")
-        db.session.add(pedido)
-        db.session.flush()
-
+    itens = []
     for produto_id, qtd in zip(produto_ids, quantidades):
         produto = Produto.query.get(int(produto_id))
-        if not produto:
-            continue
+        if produto:
+            itens.append((produto, int(qtd)))
 
-        item_existente = ItemPedido.query.filter_by(id_pedido=pedido.id_pedido, id_produto=produto.id_produto).first()
-
-        if item_existente:
-            item_existente.quantidade += int(qtd)
-        else:
-            novo_item = ItemPedido(
+    if not pedido:
+        pedido = PedidoFactory.criar_pedido(usuario, itens)
+        db.session.add(pedido)
+    else:
+        for produto, qtd in itens:
+            item_existente = ItemPedido.query.filter_by(
                 id_pedido=pedido.id_pedido,
-                id_produto=produto.id_produto,
-                quantidade=int(qtd)
-            )
-            db.session.add(novo_item)
+                id_produto=produto.id_produto
+            ).first()
+
+            if item_existente:
+                item_existente.quantidade += qtd
+            else:
+                novo_item = ItemPedido(
+                    id_pedido=pedido.id_pedido,
+                    id_produto=produto.id_produto,
+                    quantidade=qtd
+                )
+                db.session.add(novo_item)
 
     db.session.commit()
     return redirect(origem)
@@ -114,71 +161,124 @@ def deletar_item_route(id_item):
     return redirect(origem)
 
 
-regex_nome = r"^[A-Za-zÀ-ÖØ-öø-ÿ]+(?: [A-Za-zÀ-ÖØ-öø-ÿ]+)+$"
-regex_senha = r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&._-])[A-Za-z\d@$!%*?&._-]{6,}$"
-regex_email = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+@app.route("/pedido/<int:id_pedido>")
+def ver_pedido(id_pedido):
+    pedido = Pedido.query.get(id_pedido)
+
+    total = sum(
+        item.quantidade * float(item.produto.preco_unitario)
+        for item in pedido.itens
+    )
+
+    return render_template(
+        "pedido_modal.html",
+        pedido=pedido,
+        total_pedido=total
+    )
+
+
+@app.route("/atualizar-quantidade", methods=["POST"])
+def atualizar_quantidade():
+    data = request.get_json()
+
+    id_item = data.get("id_item")
+    nova_qtd = data.get("quantidade")
+
+    if not id_item or not nova_qtd:
+        return jsonify({"erro": "dados incompletos"}), 400
+
+    item = ItemPedido.query.get(id_item)
+    if not item:
+        return jsonify({"erro": "item não encontrado"}), 404
+
+    item.quantidade = nova_qtd
+    db.session.commit()
+
+    pedido = item.pedido
+    total = sum(i.quantidade * float(i.produto.preco_unitario) for i in pedido.itens)
+
+    return jsonify({
+        "status": "ok",
+        "id_item": id_item,
+        "quantidade": nova_qtd,
+        "total_pedido": round(total, 2)
+    })
+
+
+@app.context_processor
+def inject_cart_data():
+    if current_user.is_authenticated:
+        pedido_aberto = Pedido.query.filter_by(
+            id_usuario=current_user.id_usuario,
+            status="Em andamento"
+        ).first()
+    else:
+        pedido_aberto = None
+
+    total_pedido = 0
+    if pedido_aberto:
+        total_pedido = sum(
+            item.quantidade * float(item.produto.preco_unitario)
+            for item in pedido_aberto.itens
+        )
+
+    return dict(
+        pedido_aberto=pedido_aberto,
+        total_pedido=total_pedido
+    )
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
         return render_template('login.html')
+    
     elif request.method == 'POST':
         email = request.form['emailForm']
         senha = request.form['senhaForm']
 
+        if not validadores['email'].validar(email):
+            return redirect(url_for('login', erro='email_invalido'))
+
         user = db.session.query(Usuario).filter_by(email=email).first()
         if not user or not check_password_hash(user.senha, senha):
-            flash("Email ou senha incorretos.", "error")
-            return redirect(url_for('login'))
+            return redirect(url_for('login', erro='credenciais_invalidas'))
         
         login_user(user)
         return redirect(url_for('home'))
-
+    
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'GET':
         return render_template('register.html')
+    
     elif request.method == 'POST':
         nome = request.form['nomeForm']
         email = request.form['emailForm']
         senha = request.form['senhaForm']
         confirm_senha = request.form['confirm_senhaForm']
 
-        if not re.match(regex_nome, nome):
-            flash("Nome não adequado, tente novamente.", "error")
-            return redirect(url_for('register'))
+        dados_para_validar = {
+            'nome': nome,
+            'email': email,
+            'senha': senha
+        }
         
-        if not re.match(regex_email, email):
-            flash("E-mail inválido, tente novamente.", "error")
-            return redirect(url_for('register'))
+        for campo, valor in dados_para_validar.items():
+            if not validadores[campo].validar(valor):
+                return redirect(url_for('register', erro=validadores[campo].mensagem_erro()))
         
         if senha != confirm_senha:
-            flash("As senhas não coincidem.", "error")
-            return redirect(url_for('register'))
-
-        if not re.match(regex_senha, senha):
-            flash("A senha deve ter pelo menos 6 caracteres, incluindo letra maiúscula, minúscula, número e símbolo.", "error")
-            return redirect(url_for('register'))
+            return redirect(url_for('register', erro='senhas_nao_coincidem'))
 
         senha_hash = generate_password_hash(senha)
-
         novo_usuario = Usuario(nome=nome, email=email, senha=senha_hash)
         db.session.add(novo_usuario)
         db.session.commit()
 
         login_user(novo_usuario)
-
-        flash("Usuário registrado com sucesso!", "success")
-        return redirect(url_for('login'))
-    
-
-"""
-Nome Completo: Pelo menos Nome e Sobrenome
-Email: após o @, domínio do e-mail (gmail ou outlook) e extensão do domínio (.com ou .br)
-Senha: Precisa conter 1 caractere minúscula, 1 caractere maiúscula, 1 número e 1 caractere especial
-"""
+        return redirect(url_for('login', sucesso='registro_ok'))
     
 
 @app.route('/logout')

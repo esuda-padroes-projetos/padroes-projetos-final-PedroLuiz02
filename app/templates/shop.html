@@ -6,15 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vortex Energy</title>
     <link rel="shortcut icon" type="image/x-icon" href="../static/img/logo.png">
-    <link rel="stylesheet" href="../static/shop.css">
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'>
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-solid-rounded/css/uicons-solid-rounded.css'>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Jersey+15&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="../static/shop.css">
+    <link rel="stylesheet" href="../static/modal.css">
     <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
-    <script src="../static/script.js"></script>
 </head>
 
 
@@ -87,10 +87,11 @@
                                     <img src="{{ url_for('static', filename='img/' ~ item.produto.imagem) }}" alt="{{ item.produto.nome }}" id="bag-img">
                                 </div>
                                 <div id="info-prod">
-                                    <h4>{{ item.produto.nome }}</h4>
+                                    <h3>{{ item.produto.nome }}</h3>
                                     <span>Unidades: {{ item.quantidade }}</span> 
                                     <br>
                                     <h4>R${{ item.produto.preco_unitario }}</h4>
+                                    <h4>Subtotal: R${{ item.quantidade * item.produto.preco_unitario }}</h4>
                                 </div>
                                 
                                 <form action="{{ url_for('deletar_item_route', id_item=item.id_item) }}" method="post">
@@ -99,13 +100,15 @@
                                     </button>
                                 </form>
                             </div>
-                            <h4>Subtotal: R${{ item.quantidade * item.produto.preco_unitario }}</h4> <br>
                             {% endfor %}
+                            <div class="bag-total">
+                                Total: <span id="bag-total-price">R$ {{ total_pedido }}</span>
+                            </div>
                         {% else %}
                             <p>Seu carrinho está vazio.</p>
                         {% endif %}
 
-                        <button id="bag-buy-btn">
+                        <button id="bag-buy-btn" onclick="openModal('meuModal')">
                             <a href="#">Finalizar Compra</a>
                         </button>
 
@@ -121,6 +124,130 @@
             {% endif %}
             </div>
     </header>
+
+    <div class="modal" id="meuModal">
+
+        <div class="modal-overlay"></div>
+        <article class="modal-content">
+            <main class="confirm-main">
+                <h1 class="confirm-title">Confirmar Compra</h1>
+
+                <section class="confirm-grid">
+                    <aside class="order-summary">
+                        <h3 class="summary-title">Resumo do Pedido</h3>
+
+                        <section class="products-list">
+                            {% for item in pedido_aberto.itens %}
+                            <article class="order-product" data-id="{{ item.id_item }}">
+
+                                <header class="product-left">
+                                    <img src="{{ url_for('static', filename='img/' ~ item.produto.imagem) }}" alt="{{ item.produto.nome }}">
+                                    <div class="product-texts">
+                                        <h4>{{ item.produto.nome }}</h4>
+                                    </div>
+                                </header>
+                                
+                                <footer class="product-right">
+                                    <h3 class="units">Unidades: {{ item.quantidade }}</h3>
+                                    <span class="unit">R$ {{ item.produto.preco_unitario }}</span>
+                                    <div class="qty-row">
+                                        <button class="qty-minus" type="button">−</button>
+                                        <input 
+                                            type="number" 
+                                            class="qty-input" 
+                                            value="{{ item.quantidade }}" 
+                                            min="1">
+                                        <button class="qty-plus" type="button">+</button>
+                                    </div>
+                                    <form action="{{ url_for('deletar_item_route', id_item=item.id_item) }}" method="post">
+                                        <button type="submit" class="btn-delete" id="del_btn">
+                                            <i class="fi fi-rr-trash"></i>
+                                        </button>
+                                    </form>
+                                </footer>
+    
+                            </article>
+                            {% endfor %}
+                        </section>
+           
+                        <div class="order-total-fixed">
+                            <h3>Total</h3>
+                            <strong id="totalPrice">R$ {{ total_pedido }}</strong>
+                        </div>
+                    </aside>
+    
+                    <section class="form-section">
+                        <form id="confirmForm" novalidate>
+                            <fieldset class="field">
+                                <legend>Dados do comprador</legend>
+                                <div class="form-group">
+                                    <label for="fullName">Nome completo</label>
+                                    <input id="fullName" type="text" required>
+                                </div>
+    
+                                <div class="form-group">
+                                    <label for="email">E-mail</label>
+                                    <input id="email" type="email" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="cep">CEP</label>
+                                    <input id="cep" type="text" maxlength="8" value="" required onblur="pesquisacep(this.value);">
+                                </div>
+    
+                                <div class="form-group">
+                                    <div>
+                                        <label for="rua">Rua</label>
+                                        <input id="rua" type="text" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div>
+                                        <label for="bairro">Bairro</label>
+                                        <input id="bairro" type="text" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div>
+                                        <label for="cidade">Cidade</label>
+                                        <input id="cidade" type="text" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div>
+                                        <label for="uf">Estado</label>
+                                        <input id="uf" type="text" required>
+                                    </div>
+                                </div>
+    
+                                <div class="form-group">
+                                    <label for="payment">Forma de pagamento</label>
+                                    <select id="payment" required>
+                                        <option value="">Selecione...</option>
+                                        <option value="credit">Cartão de Crédito</option>
+                                        <option value="debit">Cartão de Débito</option>
+                                        <option value="pix">PIX</option>
+                                    </select>
+                                </div>
+    
+                                <div class="buttons-row">
+                                    <button type="submit" class="confirm-button buy-button">Confirmar compra</button>
+                                    <a href="/shop" class="buy-button back-button">Voltar</a>
+                                </div>
+    
+                            </fieldset>
+                        </form>
+                    </section>
+    
+                </section>
+            </main>
+    
+        </article>
+    
+    </div>
 
 
     <main>
@@ -193,6 +320,9 @@
             </div>
         </div>
     </footer>
+    <script src="../static/script.js"></script>
+    <script src="../static/modal.js"></script>
+    <script src="../static/cep.js"></script>
 </body>
 
 </html>
