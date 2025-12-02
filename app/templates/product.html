@@ -265,10 +265,10 @@
                 <div class="product-info">
                     <div id="infos">
                         <h2>{{ produto.nome if produto is defined else "Produto Indisponível" }}</h2>
-                        <p>{{ produto.descricao if produto is defined else "Indisponível" }}</p>
                         <span class="price">
                             R$ {{ produto.preco_unitario if produto is defined else "Indisponível" }}
                         </span>
+                        <p class="product-description">{{ produto.descricao if produto is defined else "Indisponível" }}</p>
                     </div>
                 
                     <form action="{{ url_for('criar_pedido') }}" method="POST">
