@@ -9,11 +9,9 @@ Sistema de e-commerce completo desenvolvido em Flask com implementação de padr
 4. Rode pelo terminal utilizando "python main.py".
 
 ## 👤 Usuários de Teste
-- Email Teste: silvanno198@gmail.com
-- Senha Teste: Silvanno198.
+- Email Teste: silvanno198@gmail.com\n  Senha Teste: Silvanno198.
 
-- Email Teste: roberto1@gmail.com
-- Senha Teste: Rroberto1.
+- Email Teste: roberto1@gmail.com\n  Senha Teste: Rroberto1.
 
 ## 📝 Regras de Validação
 - Nome: Apenas letras, mínimo 2 partes
