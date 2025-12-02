@@ -28,7 +28,7 @@ Sistema de e-commerce completo desenvolvido em Flask com implementação de padr
 - Padrões de Projeto: Factory e Strategy
 
 ## 📦 Estrutura do Projeto
-Vortex_Energy/
+V_Energy/
 │
 ├── 📄 README.md
 ├── 📄 requirements.txt
@@ -77,4 +77,4 @@ Vortex_Energy/
 │       └── 📄 sobre.html
 │
 └── 📂 instance/
-    └── 🗃️ database.db  
+    └── 🗃️ database.db
