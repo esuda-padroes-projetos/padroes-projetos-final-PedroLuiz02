@@ -79,26 +79,33 @@
                     <div class="bag-options">
 
                         {% if pedido_aberto %}
-                            {% for item in pedido_aberto.itens %}
-                            <div class="bag-itens">
-                                <div id="lata-bg">
-                                    <img src="{{ url_for('static', filename='img/' ~ item.produto.imagem) }}" alt="{{ item.produto.nome }}" id="bag-img">
-                                </div>
-                                <div id="info-prod">
-                                    <h3>{{ item.produto.nome }}</h3>
-                                    <span>Unidades: {{ item.quantidade }}</span> 
-                                    <br>
-                                    <h4>R${{ item.produto.preco_unitario }}</h4>
-                                    <h4>Subtotal: R${{ item.quantidade * item.produto.preco_unitario }}</h4>
-                                </div>
+                            <section class="bag-itens-list">
+                                {% for item in pedido_aberto.itens %}
+                                <div class="bag-itens" data-item-id="{{ item.id_item }}">
+                                    <div id="lata-bg">
+                                        <img src="{{ url_for('static', filename='img/' ~ item.produto.imagem) }}" alt="{{ item.produto.nome }}" id="bag-img">
+                                    </div>
+                                    <div id="info-prod">
+                                        <h3>{{ item.produto.nome }}</h3>
+                                        <h5 class="units">Unidades: {{ item.quantidade }}</h5>
+                                        <div class="qty-row" style="width: 120px; margin-top: 5px;">
+
+                                            <button class="qty-minus" type="button">−</button>
+                                            <input type="number" class="qty-input" value="{{ item.quantidade }}" min="1">
+                                            <button class="qty-plus" type="button">+</button>
+
+                                        </div>
+                                        <h4 class="unit">R${{ item.produto.preco_unitario }}</h4>
+                                    </div>
                                 
-                                <form action="{{ url_for('deletar_item_route', id_item=item.id_item) }}" method="post">
-                                    <button type="submit" class="btn-delete">
-                                        <i class="fi fi-rr-trash"></i>
-                                    </button>
-                                </form>
-                            </div>
-                            {% endfor %}
+                                    <form action="{{ url_for('deletar_item_route', id_item=item.id_item) }}" method="post">
+                                        <button type="submit" class="btn-delete">
+                                            <i class="fi fi-rr-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                                {% endfor %}
+                            </section>
                             <div class="bag-total">
                                 Total: <span id="bag-total-price">R$ {{ total_pedido }}</span>
                             </div>
@@ -136,7 +143,7 @@
 
                         <section class="products-list">
                             {% for item in pedido_aberto.itens %}
-                            <article class="order-product" data-id="{{ item.id_item }}">
+                            <article class="order-product" data-item-id="{{ item.id_item }}">
 
                                 <header class="product-left">
                                     <img src="{{ url_for('static', filename='img/' ~ item.produto.imagem) }}" alt="{{ item.produto.nome }}">
@@ -148,7 +155,6 @@
                                 <footer class="product-right">
                                     <h3 class="units">Unidades: {{ item.quantidade }}</h3>
                                     <span class="unit">R$ {{ item.produto.preco_unitario }}</span>
-                                    <div class="subtotal">R$ {{ "%.2f"|format(item.produto.preco_unitario|float * item.quantidade) }}</div>
                                     <div class="qty-row">
                                         <button class="qty-minus" type="button">−</button>
                                         <input 
@@ -233,8 +239,8 @@
                                 </div>
     
                                 <div class="buttons-row">
-                                    <button type="submit" class="confirm-button buy-button">Confirmar compra</button>
-                                    <a href="/" class="buy-button back-button">Voltar</a>
+                                    <button type="submit" class="buy-button-modal" onclick="buy_off()">Confirmar compra</button>
+                                    <button type="button" class="back-button-modal" onclick="closeModal('meuModal')">Voltar</button>
                                 </div>
     
                             </fieldset>

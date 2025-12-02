@@ -550,6 +550,36 @@ flex-wrap: wrap;
   background: #6d28d9;
 }
 
+.bag-itens-list{
+  flex: none;
+  height: auto;
+  max-height: 668px;
+  overflow-y: auto;
+  padding: 0px 0px 0px 0px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  min-height: 0vh;
+}
+
+.bag-itens-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.bag-itens-list::-webkit-scrollbar-track {
+  background: #2d2d2d;
+  border-radius: 10px;
+}
+
+.bag-itens-list::-webkit-scrollbar-thumb {
+  background: #7c3aed;
+  border-radius: 10px;
+}
+
+.bag-itens-list::-webkit-scrollbar-thumb:hover {
+  background: #6d28d9;
+}
 
 .section-1 {
   background: #18141d;

@@ -176,15 +176,17 @@ def ver_pedido(id_pedido):
         total_pedido=total
     )
 
-
 @app.route("/atualizar-quantidade", methods=["POST"])
 def atualizar_quantidade():
-    data = request.get_json()
+    data = request.get_json(silent=True)
+
+    if not data:
+        return jsonify({"erro": "JSON inválido"}), 400
 
     id_item = data.get("id_item")
     nova_qtd = data.get("quantidade")
 
-    if not id_item or not nova_qtd:
+    if id_item is None or nova_qtd is None:
         return jsonify({"erro": "dados incompletos"}), 400
 
     item = ItemPedido.query.get(id_item)
@@ -203,7 +205,6 @@ def atualizar_quantidade():
         "quantidade": nova_qtd,
         "total_pedido": round(total, 2)
     })
-
 
 @app.context_processor
 def inject_cart_data():

@@ -197,11 +197,11 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // ATUALIZAR TOTAL E SUBTOTAL
-    const produtos = document.querySelectorAll(".order-product");
+    const produtos = document.querySelectorAll(".order-product, .bag-itens");
     const totalModal = document.querySelector("#totalPrice");
     const totalBag = document.querySelector("#bag-total-price");
 
-produtos.forEach(prod => {
+    produtos.forEach(prod => {
 
     const btnMinus = prod.querySelector(".qty-minus");
     const btnPlus = prod.querySelector(".qty-plus");
@@ -223,7 +223,6 @@ produtos.forEach(prod => {
         })
         .then(r => r.json())
         .then(data => {
-
             if (data.total_pedido !== undefined) {
                 if (totalModal) totalModal.textContent = "R$ " + data.total_pedido.toFixed(2);
                 if (totalBag) totalBag.textContent = "R$ " + data.total_pedido.toFixed(2);

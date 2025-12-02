@@ -44,5 +44,41 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
   
+    window.buy_off = function(event) {
+      const nome = document.getElementById('fullName');
+      const email = document.getElementById('email');
+      const cep = document.getElementById('cep');
+      const rua = document.getElementById('rua');
+      const bairro = document.getElementById('bairro');
+      const cidade = document.getElementById('cidade');
+      const uf = document.getElementById('uf');
+      const pagamento = document.getElementById('payment');
+      
+      if(nome.value && email.value && cep.value && rua.value && 
+         bairro.value && cidade.value && uf.value && pagamento.value) {
+          
+          alert("Compras Indisponíveis no Momento, Desculpe o Transtorno!");
+          
+          nome.value = "";
+          email.value = "";
+          cep.value = "";
+          rua.value = "";
+          bairro.value = "";
+          cidade.value = "";
+          uf.value = "";
+          pagamento.value = "";
+          
+          if(event) {
+              event.preventDefault();
+              event.stopPropagation();
+          }
+          
+      } else {
+          alert("Preencha Todos os campos!");
+          if(event) event.preventDefault();
+      }
+      return false;
+  }
+  
   });
   
