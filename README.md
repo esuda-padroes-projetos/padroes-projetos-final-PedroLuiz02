@@ -29,20 +29,19 @@ Sistema de e-commerce completo desenvolvido em Flask com implementação de padr
 
 ## 📦 Estrutura do Projeto
 Vortex_Energy/
+├── .gitignore
+├── README.md
+├── Procfile
+├── main.py
+├── requirements.txt
 ├── app/
+│   ├── __init__.py
+│   ├── db.py
+│   ├── factories.py
+│   ├── models.py
+│   ├── routes.py
 │   ├── static/
 │   │   ├── img/
-│   │   │   ├── background1.png
-│   │   │   ├── lata1.png
-│   │   │   ├── lata2.png
-│   │   │   ├── lata3.png
-│   │   │   ├── lata4.png
-│   │   │   ├── lata5.png
-│   │   │   ├── lata6.png
-│   │   │   ├── latas_banner.png
-│   │   │   ├── Latas.png
-│   │   │   └── logo.png
-│   │   │
 │   │   ├── cep.js
 │   │   ├── home.css
 │   │   ├── login.css
@@ -54,26 +53,12 @@ Vortex_Energy/
 │   │   ├── script.js
 │   │   ├── shop.css
 │   │   └── sobre.css
-│   │
-│   ├── templates/
-│   │   ├── index.html
-│   │   ├── login.html
-│   │   ├── product.html
-│   │   ├── register.html
-│   │   ├── shop.html
-│   │   └── sobre.html
-│   │
-│   ├── __init__.py
-│   ├── db.py
-│   ├── factories.py
-│   ├── models.py
-│   └── routes.py
-│
-├── instance/
-│   └── database.db
-│
-├── .gitignore
-├── main.py
-├── Procfile
-├── README.md
-└── requirements.txt
+│   └── templates/
+│       ├── index.html
+│       ├── login.html
+│       ├── product.html
+│       ├── register.html
+│       ├── shop.html
+│       └── sobre.html
+└── instance/
+    └── database.db
