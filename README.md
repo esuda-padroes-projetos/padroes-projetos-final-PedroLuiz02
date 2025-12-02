@@ -28,53 +28,52 @@ Sistema de e-commerce completo desenvolvido em Flask com implementação de padr
 - Padrões de Projeto: Factory e Strategy
 
 ## 📦 Estrutura do Projeto
-V_Energy/
-│
-├── 📄 README.md
-├── 📄 requirements.txt
-├── 📄 main.py
-├── 📄 Procfile
-├── 📄 .gitignore
-│
-├── 📂 app/
-│   ├── 📄 __init__.py
-│   ├── 📄 db.py
-│   ├── 📄 models.py
-│   ├── 📄 routes.py
-│   ├── 📄 factories.py
-│   │
-│   ├── 📂 static/
-│   │   ├── 📂 img/
-│   │   │   ├── 🖼️ logo.png
-│   │   │   ├── 🖼️ background1.png
-│   │   │   ├── 🖼️ latas_banner.png
-│   │   │   ├── 🖼️ Latas.png
-│   │   │   ├── 🖼️ lata1.png
-│   │   │   ├── 🖼️ lata2.png
-│   │   │   ├── 🖼️ lata3.png
-│   │   │   ├── 🖼️ lata4.png
-│   │   │   ├── 🖼️ lata5.png
-│   │   │   └── 🖼️ lata6.png
+Vortex_Energy/
+├── app/
+│   ├── static/
+│   │   ├── img/
+│   │   │   ├── background1.png
+│   │   │   ├── lata1.png
+│   │   │   ├── lata2.png
+│   │   │   ├── lata3.png
+│   │   │   ├── lata4.png
+│   │   │   ├── lata5.png
+│   │   │   ├── lata6.png
+│   │   │   ├── latas_banner.png
+│   │   │   ├── Latas.png
+│   │   │   └── logo.png
 │   │   │
-│   │   ├── 📜 cep.js
-│   │   ├── 📜 home.css
-│   │   ├── 📜 login.css
-│   │   ├── 📜 modal.css
-│   │   ├── 📜 modal.js
-│   │   ├── 📜 product.css
-│   │   ├── 📜 regex.js
-│   │   ├── 📜 register.css
-│   │   ├── 📜 script.js
-│   │   ├── 📜 shop.css
-│   │   └── 📜 sobre.css
+│   │   ├── cep.js
+│   │   ├── home.css
+│   │   ├── login.css
+│   │   ├── modal.css
+│   │   ├── modal.js
+│   │   ├── product.css
+│   │   ├── regex.js
+│   │   ├── register.css
+│   │   ├── script.js
+│   │   ├── shop.css
+│   │   └── sobre.css
 │   │
-│   └── 📂 templates/
-│       ├── 📄 index.html
-│       ├── 📄 login.html
-│       ├── 📄 product.html
-│       ├── 📄 register.html
-│       ├── 📄 shop.html
-│       └── 📄 sobre.html
+│   ├── templates/
+│   │   ├── index.html
+│   │   ├── login.html
+│   │   ├── product.html
+│   │   ├── register.html
+│   │   ├── shop.html
+│   │   └── sobre.html
+│   │
+│   ├── __init__.py
+│   ├── db.py
+│   ├── factories.py
+│   ├── models.py
+│   └── routes.py
 │
-└── 📂 instance/
-    └── 🗃️ database.db
+├── instance/
+│   └── database.db
+│
+├── .gitignore
+├── main.py
+├── Procfile
+├── README.md
+└── requirements.txt
