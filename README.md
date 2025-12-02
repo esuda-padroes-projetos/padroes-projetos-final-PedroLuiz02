@@ -1,4 +1,4 @@
-Vortex Energy - Sistema de E-commerce em Flask
+<h1>Vortex Energy - Sistema de E-commerce em Flask</h1><br>
 Sistema de e-commerce completo desenvolvido em Flask com implementação de padrões de projeto, sistema de autenticação seguro, carrinho de compras dinâmico e gestão de pedidos.
 
 ## ▶️ Como Usar
