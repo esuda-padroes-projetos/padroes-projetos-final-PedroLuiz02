@@ -14,7 +14,7 @@ Sistema de e-commerce completo desenvolvido em Flask com implementação de padr
 - Email Teste: roberto1@gmail.com<br>  Senha de Teste "Rroberto1."
 
 ## 📝 Regras de Validação
-- Nome: Apenas letras, mínimo 2 partes
+- Nome: Apenas letras, mínimo nome e sobrenome
 - Email: Formato válido de email
 - Senha: 6+ caracteres, maiúscula, minúscula, número e caractere especial
 
